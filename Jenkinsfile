@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/vnk123/Smart-home-Energy-Monitoring-.git'
+                git branch: 'main', url: 'https://github.com/vnk123/Smart-home-Energy-Monitoring-.git'
             }
         }
         stage('Build') {
