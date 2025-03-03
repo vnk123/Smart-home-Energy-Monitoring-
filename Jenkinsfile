@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/vnk123/Smart-home-Energy-Monitoring-.git'
+                git 'git@github.com:vnk123/Smart-home-Energy-Monitoring-.git'
             }
         }
 
