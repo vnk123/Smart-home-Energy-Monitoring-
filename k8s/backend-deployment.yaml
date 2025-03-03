@@ -14,9 +14,12 @@ spec:
     spec:
       containers:
         - name: backend
-          image: your-dockerhub-username/backend:latest
+          image: pes1ug21cs706/backend:latest  # ✅ Update username
           ports:
             - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo-service:27017/smart_home_db"  # ✅ Connect backend to MongoDB
 ---
 apiVersion: v1
 kind: Service
@@ -29,4 +32,4 @@ spec:
     - protocol: TCP
       port: 5000
       targetPort: 5000
-  type: ClusterIP
+  type: ClusterIP  # Keeps the backend accessible only within the cluster
