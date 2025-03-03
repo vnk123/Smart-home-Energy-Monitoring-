@@ -1,54 +1,24 @@
 pipeline {
     agent any
-
-    environment {
-        FRONTEND_IMAGE = 'your-react-app'
-        BACKEND_IMAGE = 'your-backend-app'
-        DOCKER_REGISTRY = 'your-docker-registry'
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
-                checkout scm
+                git 'https://github.com/vnk123/Smart-home-Energy-Monitoring-.git'
             }
         }
-
-        stage('Build Frontend') {
+        stage('Build') {
             steps {
-                script {
-                    // Build the frontend Docker image
-                    sh 'docker build -t $DOCKER_REGISTRY/$FRONTEND_IMAGE -f Dockerfile.frontend .'
-                }
+                echo 'Building the application...'
             }
         }
-
-        stage('Build Backend') {
+        stage('Test') {
             steps {
-                script {
-                    // Build the backend Docker image
-                    sh 'docker build -t $DOCKER_REGISTRY/$BACKEND_IMAGE -f Dockerfile.backend .'
-                }
+                echo 'Running tests...'
             }
         }
-
-        stage('Push Images') {
+        stage('Deploy') {
             steps {
-                script {
-                    // Push both frontend and backend images to Docker registry
-                    sh 'docker push $DOCKER_REGISTRY/$FRONTEND_IMAGE'
-                    sh 'docker push $DOCKER_REGISTRY/$BACKEND_IMAGE'
-                }
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    // Update frontend and backend deployments in Kubernetes
-                    sh 'kubectl set image deployment/frontend frontend=$DOCKER_REGISTRY/$FRONTEND_IMAGE --record'
-                    sh 'kubectl set image deployment/backend backend=$DOCKER_REGISTRY/$BACKEND_IMAGE --record'
-                }
+                echo 'Deploying the application...'
             }
         }
     }
