@@ -13,7 +13,20 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'git@github.com:vnk123/Smart-home-Energy-Monitoring-.git'
+                script {
+                    try {
+                        checkout([
+                            $class: 'GitSCM',
+                            branches: [[name: 'main']], 
+                            userRemoteConfigs: [[
+                                url: 'git@github.com:vnk123/Smart-home-Energy-Monitoring-.git',
+                                credentialsId: 'Jenkins Server Key' 
+                            ]]
+                        ])
+                    } catch (Exception e) {
+                        error "❌ Git checkout failed: ${e.message}"
+                    }
+                }
             }
         }
 
@@ -42,13 +55,19 @@ pipeline {
         stage('Build & Push Docker Images') {
             steps {
                 withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        docker build -t $FRONTEND_IMAGE ./frontend
-                        docker build -t $BACKEND_IMAGE ./backend
-                        docker login -u $DOCKER_USER -p $DOCKER_PASS
-                        docker push $FRONTEND_IMAGE
-                        docker push $BACKEND_IMAGE
-                    """
+                    script {
+                        try {
+                            sh """
+                                docker build -t $FRONTEND_IMAGE ./frontend
+                                docker build -t $BACKEND_IMAGE ./backend
+                                docker login -u $DOCKER_USER -p $DOCKER_PASS
+                                docker push $FRONTEND_IMAGE
+                                docker push $BACKEND_IMAGE
+                            """
+                        } catch (Exception e) {
+                            error "❌ Docker build/push failed: ${e.message}"
+                        }
+                    }
                 }
             }
         }
@@ -56,11 +75,17 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 withKubeConfig([credentialsId: KUBECONFIG_CREDENTIALS_ID]) {
-                    sh """
-                        kubectl apply -f k8s/frontend-deployment.yaml
-                        kubectl apply -f k8s/backend-deployment.yaml
-                        kubectl apply -f k8s/mongo-deployment.yaml  # Deploy MongoDB
-                    """
+                    script {
+                        try {
+                            sh """
+                                kubectl apply -f k8s/frontend-deployment.yaml
+                                kubectl apply -f k8s/backend-deployment.yaml
+                                kubectl apply -f k8s/mongo-deployment.yaml  # Deploy MongoDB
+                            """
+                        } catch (Exception e) {
+                            error "❌ Kubernetes deployment failed: ${e.message}"
+                        }
+                    }
                 }
             }
         }
@@ -71,7 +96,7 @@ pipeline {
             echo '✅ Deployment Successful!'
         }
         failure {
-            echo '❌ Build or Deployment Failed!'
+            echo '❌ Build or Deployment Failed! Check logs for details.'
         }
     }
 }
