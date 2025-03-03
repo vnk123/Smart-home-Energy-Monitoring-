@@ -15,7 +15,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        checkout([
+                        checkout([ 
                             $class: 'GitSCM',
                             branches: [[name: 'main']], 
                             userRemoteConfigs: [[
@@ -74,13 +74,13 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withKubeConfig([credentialsId: KUBECONFIG_CREDENTIALS_ID]) {
+                withCredentials([file(credentialsId: KUBECONFIG_CREDENTIALS_ID, variable: 'KUBECONFIG')]) {
                     script {
                         try {
                             sh """
                                 kubectl apply -f k8s/frontend-deployment.yaml
                                 kubectl apply -f k8s/backend-deployment.yaml
-                                kubectl apply -f k8s/mongo-deployment.yaml  # Deploy MongoDB
+                                kubectl apply -f k8s/mongo-deployment.yaml  
                             """
                         } catch (Exception e) {
                             error "❌ Kubernetes deployment failed: ${e.message}"
