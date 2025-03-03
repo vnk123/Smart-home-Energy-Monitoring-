@@ -1,0 +1,61 @@
+/* Global Styles */
+body {
+  background-color: #f3f4f6; /* Light gray */
+  color: #1f2937; /* Dark gray text */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4F46E5; /* Blue */
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #3730a3; /* Darker Blue */
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Flexbox Utility */
+.flex {
+  display: flex;
+  gap: 10px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 100%;
+  height: 500px;
+}
